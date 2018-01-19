@@ -61,6 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
     FloatingActionButton fab;
     static AbstractXMPPConnection conn1;
     XmppService.MyBinder binder;
+    private XmppService ser;
     HashMap<String,String> attr=new HashMap<String, String>();
 
     private ServiceConnection connt = new ServiceConnection() {
@@ -93,12 +94,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
     @OnClick(R.id.bt_register)
     public void onClick(View view){
-        conn1=binder.getAbstractXMPPConnection();
+        conn1=ser.getAbstractXMPPConnection();
         try { //先登录才能注册
             if(!conn1.isConnected()){//重连
-                unbindService(connt);
-                getConnection();
-                conn1=binder.getAbstractXMPPConnection();
+                 ser.Connect();
             }
             if(conn1.isConnected()){
                 // Log into the server
@@ -218,5 +217,11 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         animateRevealClose();
+    }
+
+    @Override
+    protected void onDestroy(){
+       // unbindService(connt);
+        super.onDestroy();
     }
 }

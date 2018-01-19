@@ -22,6 +22,9 @@ import android.widget.Toast;
 
 import com.xzq.im.R;
 import com.xzq.im.Service.XmppService;
+import com.xzq.im.bean.UsersInfomation;
+import com.xzq.im.db.MessageHelper;
+import com.xzq.im.db.MyHelper;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 
@@ -49,10 +52,13 @@ public class LoginActivity extends AppCompatActivity {
     FloatingActionButton fab;
     static AbstractXMPPConnection  conn1;
     XmppService.MyBinder binder;
+    private XmppService ser;
     private ServiceConnection connt = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             binder = (XmppService.MyBinder) service;
+            ser=binder.getService();
+            ser.Connect();
         }
 
         @Override
@@ -66,6 +72,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        Toast.makeText(getApplicationContext(), "哈哈哈哈哈", Toast.LENGTH_LONG).show();
+        Log.d("哈哈","shabi");
         getConnection();//连接到服务器
     }
 
@@ -115,23 +123,22 @@ public class LoginActivity extends AppCompatActivity {
 
     public boolean login(String username, String password) {
 
-        conn1=binder.getAbstractXMPPConnection();
+        conn1=ser.getAbstractXMPPConnection();
         try {
             if(!conn1.isConnected()){//重连
-                unbindService(connt);
-                getConnection();
-                conn1=binder.getAbstractXMPPConnection();
-
+                ser.Connect();
             }
-                if(conn1.isConnected()){
-            // Log into the server
+            if(conn1.isConnected()){
+                // Log into the server
                 conn1.login(username,password);
+                ser.SetUser(username, password);//将用户插入数据库
+                ser.initListener();
                 Toast.makeText(getApplicationContext(), "连接成功", Toast.LENGTH_LONG).show();
             }
             else{
-                    Toast.makeText(getApplicationContext(), "服务器未连接\n请重试", Toast.LENGTH_LONG).show();
-                    return false;
-                }
+                Toast.makeText(getApplicationContext(), "服务器未连接\n请重试", Toast.LENGTH_LONG).show();
+                return false;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,5 +146,10 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+    @Override
+    protected void onDestroy(){
+       // unbindService(connt);
+        super.onDestroy();
     }
 }
