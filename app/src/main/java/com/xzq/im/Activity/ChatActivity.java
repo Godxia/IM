@@ -154,24 +154,6 @@ public class ChatActivity extends BaseActivity {
         }
     }
 
-//    private void initListener2() {
-//                if(conn1==null)
-//                    conn1=ser.getAbstractXMPPConnection();
-//               ChatManager chatManager = ChatManager.getInstanceFor(conn1);
-//               InChatMessageListener inListener = new InChatMessageListener();
-//               chatManager.addIncomingListener(inListener);
-//    }
-//
-//    public class InChatMessageListener implements IncomingChatMessageListener {
-//
-//        @Override
-//        public void newIncomingMessage(final EntityBareJid from, final Message message, Chat chat) {
-//           // msgList.add(new Msg(from.toString(), message.getBody(), System.currentTimeMillis() + "", "text", 2));
-//            myhelper.insertOneMsg(user.getUser_id(), from.toString(), message.getBody(), System.currentTimeMillis() + "", message.getTo().toString(), 2);
-//            //与发送的一样，因为记录是以自己来保存，通过1,2判断自己的还是别人的。+msg_list_id+"\n"+msgList.size()
-//            getMsg();
-//        }
-//    }
 
     /**
      * 从数据库中获取聊天记录
@@ -191,7 +173,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     /**
-     * 观察新消息
+     * 接收新消息
      */
     public void newMsg() {
         Toast.makeText(this, "执行了", Toast.LENGTH_SHORT).show();
